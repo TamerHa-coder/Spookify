@@ -14,6 +14,7 @@ import PlaylistPlayOutlinedIcon from "@material-ui/icons/PlaylistPlayOutlined";
 import MusicNoteOutlinedIcon from "@material-ui/icons/MusicNoteOutlined";
 import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
 import { Link } from "react-router-dom";
+import image from "./pumkin.png";
 
 
 function NavAppBar() {
@@ -93,7 +94,9 @@ function NavAppBar() {
             </div>
           </Link>
         </div>
+        
       </Drawer>
+      <img alt='404' src={image} style={{width:55, height:55, position: 'absolute', top: 3, right: 15}} />
     </div>
   );
 }
