@@ -28,6 +28,72 @@ mysqlCon.query("SELECT * FROM artists", (err, result, fields) => {
 
 // All get by id endpoints
 
+app.get("/album", (req, res) => {
+    let sql; 
+    if (req.query.search) {
+      sql = `SELECT albums.*, artists.name AS artist FROM albums
+      JOIN artists ON albums.artist_id = artists.artist_id
+      WHERE albums.name LIKE '%${req.query.search}%'
+      ORDER BY albums.created_at DESC`;
+    } else {
+      sql = `SELECT albums.*, artists.name AS artist FROM albums
+      JOIN artists ON albums.artist_id = artists.artist_id
+      ORDER BY albums.created_at DESC`;
+    }
+    mysqlCon.query(sql, (err, data) => {
+        if (err) res.send(err.message);
+        res.send(data);
+    })
+  });
+
+  app.get("/song", (req, res) => {
+    let sql;
+    if (req.query.search) {
+      sql = `SELECT songs.*, albums.name As album, artists.name As artist FROM songs
+      JOIN artists ON artists.artist_id = songs.artist_id
+      JOIN albums ON albums.album_id = songs.album
+      WHERE songs.title LIKE '%${req.query.search}%'
+      ORDER BY songs.created_at DESC`
+    } else {
+      sql = `SELECT songs.*, albums.name As album, artists.name As artist FROM songs
+      JOIN artists ON artists.artist_id = songs.artist_id
+      JOIN albums ON albums.album_id = songs.album
+      ORDER BY songs.created_at DESC`;
+    }
+    mysqlCon.query(sql, (err, data) => {
+        if (err) res.send(err.message);
+        res.send(data);
+    })
+  });
+
+  app.get("/artist", (req, res) => {
+    let sql;
+    if (req.query.search) {
+      sql = `SELECT * FROM artists WHERE artists.name LIKE '%${req.query.search}%'`;
+    } else {
+      sql = `SELECT * FROM artists`;
+    }
+    mysqlCon.query(sql, (err, data) => {
+        if (err) res.send(err.message);
+        res.send(data);
+    })
+  });
+
+  app.get("/playlist", (req, res) => {
+    let sql;
+    if (req.query.search) {
+      sql = `SELECT * FROM playlist WHERE playlist.name LIKE '%${req.query.search}%'`;
+    } else {
+      sql = `SELECT * FROM playlist`;
+    }
+    mysqlCon.query(sql, (err, data) => {
+        if (err) res.send(err.message);
+        res.send(data);
+    })
+  });
+
+// get by id
+
 app.get("/song/:id", (req, res) => {
     const sql = `SELECT * FROM songs WHERE song_id = ${req.params.id}`;
     mysqlCon.query(sql, (err, data) => {
@@ -62,7 +128,7 @@ app.get("/playlist/:id", (req, res) => {
     })
 });
 
-// All get top 20 endpoints
+//  get top 20 endpoints
   
 app.get("/top_songs", (req, res) => {
     const sql = `SELECT songs.*, albums.name As album, artists.name As artist FROM songs
@@ -95,13 +161,78 @@ app.get("/top_songs", (req, res) => {
     })
   });
 
-  app.get("/top_playlist", (req, res) => {
+  app.get("/top_playlists", (req, res) => {
     const sql = `SELECT * FROM playlist LIMIT 20`;
     mysqlCon.query(sql, (err, data) => {
         if (err) res.send(err.message);
         res.send(data);
     })
   });
+
+// Get songs from album 
+
+    app.get("/albumsongs/:id", (req, res) => {
+      if (isNaN(Number(req.params.id))) {
+        return res.status(400).send('Id must be a number')
+      }
+      const sql = `SELECT songs.*, albums.name As album, artists.name As artist FROM songs
+      JOIN artists ON artists.artist_id = songs.artist_id
+      JOIN albums ON albums.album_id = songs.album 
+      WHERE songs.album = ${req.params.id}`;
+      mysqlCon.query(sql, (err, data) => {
+          if (err) res.send(err.message);
+          res.send(data);
+      })
+    });
+
+  // Get songs from Artist
+
+    app.get("/artistsongs/:id", (req, res) => {
+        if (isNaN(Number(req.params.id))) {
+          return res.status(400).send('Id must be a number')
+        }
+          const sql = `SELECT songs.*, albums.name As album, artists.name As artist FROM songs
+          JOIN artists ON artists.artist_id = songs.artist_id
+          JOIN albums ON albums.album_id = songs.album 
+          WHERE songs.artist_id = ${req.params.id}`;
+          mysqlCon.query(sql, (err, data) => {
+                if (err) res.send(err.message);
+                res.send(data);
+            })
+      });
+
+// Get albums from Artist
+
+    app.get("/artistalbums/:id", (req, res) => {
+        if (isNaN(Number(req.params.id))) {
+          return res.status(400).send('Id must be a number')
+        }
+          const sql = `SELECT albums.*, artists.name As artist FROM albums
+          JOIN artists ON artists.artist_id = albums.artist_id
+          WHERE albums.artist_id = ${req.params.id}`;
+          mysqlCon.query(sql, (err, data) => {
+              if (err) res.send(err.message);
+              res.send(data);
+          })
+      
+      });
+
+// Get all songs from a single Playlist 
+
+   app.get("/playlistsongs/:id", (req, res) => {
+       if (isNaN(Number(req.params.id))) {
+         return res.status(400).send('Id must be a number')
+       }
+       const sql = `SELECT songs.*, albums.name As album, artists.name As artist FROM songs
+       JOIN artists ON artists.artist_id = songs.artist_id
+       JOIN albums ON albums.album_id = songs.album 
+       JOIN song_in_playlist ON song_in_playlist.song_id = songs.song_id
+       WHERE song_in_playlist.playlist_id =  ${req.params.id}`;
+       mysqlCon.query(sql, (err, data) => {
+           if (err) res.send(err.message);
+           res.send(data);
+       })
+     });
 
 // All post endpoints
 
@@ -237,6 +368,6 @@ app.delete("/playlist/:id", (req, res) => {
     })
 });
 
-app.listen('3000', () =>{
-    console.log('server srtarted on port 3000')
+app.listen('3001', () =>{
+    console.log('server srtarted on port 3001')
 });
