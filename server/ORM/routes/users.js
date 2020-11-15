@@ -3,6 +3,7 @@ const router = Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { User } = require("../models");
+require("dotenv").config();
 
 router.get("/", async (req, res) => {
   try {
@@ -45,7 +46,7 @@ router.post("/login", async (req, res) => {
         if(!rememberToken) {
           tokenProps.exp = Math.floor(Date.now() / 1000) + 3600;
         }
-        const token = jwt.sign(tokenProps, "my_secret_key");
+        const token = jwt.sign(tokenProps, process.env.SECRET);
         res.cookie('name', user.name)
         res.cookie('token', token)
         res.json({msg: 'Connected'});
@@ -62,7 +63,7 @@ router.post("/login", async (req, res) => {
 
 router.post("/validate", (req, res) => {
   console.log('hello')
-  jwt.verify(req.body.token, "my_secret_key", (error, data) => {
+  jwt.verify(req.body.token, process.env.SECRET, (error, data) => {
     if (error) {
       res.sendStatus(403);
     } else {
