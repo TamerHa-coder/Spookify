@@ -30,4 +30,4 @@ Data Base Structure:
 Client app GIF: 
 
 
-![hide](./readmeFiles/spookify.gif)
+![](./ReadMeFiles/spookify.gif)
