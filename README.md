@@ -1,6 +1,8 @@
 # Spookify
 
-This is my halloween themed Spotify app. The app mimics a spotify application, using React (and React Router), Node.js, and mySQL.
+Hello everyone,
+This is my full stack project- Halloween themed Spotify app. The app mimics a spotify application.
+In this project I used React for the client side, Express and Node.js for the backend, and also I used mySQL for the database.
 
 ## How To Run
 cd to client directory and run npm install, and then "npm start" to run the client:
