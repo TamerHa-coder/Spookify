@@ -2,6 +2,7 @@
 
 Hello everyone,
 This is my full stack project- Halloween themed Spotify app. The app mimics a spotify application.
+
 In this project I used React for the client side, Express and Node.js for the backend, and also I used mySQL for the database.
 
 ## How To Run
