@@ -25,3 +25,9 @@ Data Base Structure:
 
 
 ![Image of ERD](./ReadMeFiles/‪spotify_DrawSQL.png)
+
+
+Client app GIF: 
+
+
+![hide](./readmeFiles/spookify.gif)
